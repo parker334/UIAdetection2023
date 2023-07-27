@@ -1,4 +1,4 @@
-function [data_subpl,fitresult1,blanks,blankp,blankd,blankdiam,outlierProps] = AnomalyDetection(Images,data_pl,blanks,blanki,blankdiam,blankh,...
+function [anom_list,data_subpl,fitresult1,blanks,blankp,blankd,blankdiam,outlierProps] = AnomalyDetection(Images,data_pl,blanks,blanki,blankdiam,blankh,...
     blankd,blankp,Matched,ConInt,minClustRate,SmallLinks,INFO,BottomBranch,RefineIA,ConIntRefine,Dclose,RRadMult)
 
 if RefineIA == 1 %if refinement occurs, needs two separate outlier analyses. 
@@ -205,8 +205,9 @@ if ~isempty(SubList)
 end
 
 UIAsize = Voxels_sub*prod([INFO.PixelSpacing' INFO.SliceThickness]);
+anom_list = cell(size(UIAsize,2));
 for i=1:size(UIAsize,2)
-    strcat('UIA discovered! Size: ',num2str(UIAsize(i)),{' '},'mm3', '. Dim:',{' '},num2str([max(data_subpl(i).PixelList)-min(data_subpl(i).PixelList)].*[INFO.PixelSpacing' INFO.SliceThickness]),{' '},'mm.')
+    anom_list(i) = strcat('UIA discovered! Size: ',num2str(UIAsize(i)),{' '},'mm3', '. Dim:',{' '},num2str([max(data_subpl(i).PixelList)-min(data_subpl(i).PixelList)].*[INFO.PixelSpacing' INFO.SliceThickness]),{' '},'mm.');
 end
 end
 
