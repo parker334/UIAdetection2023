@@ -1,4 +1,4 @@
-function batch_results = BatchRunner(start_index,batch_size)
+function batch_results = X_BatchRunner(start_index,batch_size)
 % Initialize results
 batch_results = zeros(batch_size,1);
 
