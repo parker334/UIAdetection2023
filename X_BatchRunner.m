@@ -1,9 +1,10 @@
-function batch_results = X_BatchRunner(start_index,batch_size)
+function [batch_num_results, batch_info_results] = X_BatchRunner(start_index,batch_size)
 % Initialize results
-batch_results = zeros(batch_size,1);
+batch_num_results = zeros(batch_size,1);
+batch_info_results = cell(batch_size,1);
 
 % Get image files name from specified folder
-image_folder = 'F:\images';
+image_folder = 'D:\images';
 names = dir(image_folder);
 names = names(3:end);
 
@@ -18,9 +19,11 @@ for i = 1:batch_size
     INFO.ContentDate = '';              %2010 MIDAS;  2007 (IMPERIAL);
     INFO.StudyDescription = '';         %MIDAS Healthy; Imperial Healthy
     INFO.Modality = 'MR';               %MR; DSA; CTA
-    [anom_list, data_subpl,fitresult,time2run,outlierProps,KwPredictor,MaskVol,PathLength] = PipelineAlgorithm(fileloc,DICOMnum,INFO);
+    [anom_list, data_subpl,fitresult,time2run,outlierProps,KwPredictor,MaskVol,PathLength] = X_PipelineAlgorithm(fileloc,DICOMnum,INFO);
     anom_list
     if size(anom_list) ~= 0
-        batch_results(i) = anom_list;
+        batch_num_results(i) = size(anom_list,1);
+        batch_info_results(i) = {anom_list(:,1)};
     end
 end
+batch_info_results
