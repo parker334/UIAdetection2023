@@ -1,4 +1,4 @@
-function [anom_list,data_subpl,fitresult,time2run,outlierProps,kTPredictor,MaskVol,PathLength] = X_PipelineAlgorithm(fileloc,Choices,INFO)
+function [anom_list,data_subpl,fitresult,time2run,outlierProps,kTPredictor,MaskVol,PathLength] = X_PipelineAlgorithm(fileloc,Choices,INFO,name, kT)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% This MATLAB algorithm should comprise 13 files which correspond to Allenby's 2020 prepint on unruptured intracranial aneurysm detection, primarily from TOF MRA images.
 %This code is run in MATLAB's 2018a package and is reliant on bwdistsc.m (Yuriy Mishchenko, 2007) 
@@ -51,7 +51,7 @@ ScanSpace = 7; %this dictates the size of the bounding box on the final plot, it
 %Threshold params
 binnum = 50; %voxel intensity histogram bin number 
 PeriphPrc = 0.04; %peripheral histogram bins to delete (as a percent, eg 0.04=4% is peripheral 2 bins for 50 total [3 48])
-kT = 0.3134*mean(INFO.PixelSpacing')^-1.522;%This is the critical kT weight parameter which guides the extent of global or local segmentation (ratio)
+%kT = 0.3134*mean(INFO.PixelSpacing')^-1.522;%This is the critical kT weight parameter which guides the extent of global or local segmentation (ratio)
     %We've assessed 3 kT weight parameters in our paper:
     %1.78 for constant relationship
     %0.6709*mean(INFO.PixelSpacing')^-0.839 for 1.20 intercept at 0.51
@@ -91,6 +91,10 @@ end
 [~,tallImage] = max(ImageHeight);
 ImageIndex(ImageIndex==tallImage) = [];
 for i=1:length(Images)
+    % Error if too long
+    if toc > (60*10)
+        error('Took too long (>10 minutes)')
+    end
     [Threshold{i},MMThresh,kTPredictor] = AUTOthresh(NumTissue,WhichTissue,kT,Images{i},binnum,ObjectImageFrac,PeriphPrc,0,1); %shuld be more like 3400 instead of 4400
     [blanki{i},data_pl{i}] = DICOMthresh(Images{i},Threshold{i},ObjectImageFrac,0);
 end
@@ -133,7 +137,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Metrics and figure output
-MultiRegionMesh(subRegions,Images,Threshold,INFO,data_pl,blankp,blankd,blankdiam,blankh,DiagPix,data_plsi,colorstring,ChoiceDisplay, fitresult)
+MultiRegionMesh(subRegions,Images,Threshold,INFO,data_pl,blankp,blankd,blankdiam,blankh,DiagPix,data_plsi,colorstring,ChoiceDisplay, fitresult, name)
 time2run = toc;
 fitresult = [fitresult.p00,fitresult.p10,fitresult.p01,fitresult.p20,fitresult.p11,fitresult.p30,fitresult.p21,fitresult.p40,fitresult.p31];
 PathLength = max(max(max(blankp{1})));

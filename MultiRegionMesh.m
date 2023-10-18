@@ -1,4 +1,4 @@
-function MultiRegionMesh(subRegions,Images,Threshold,INFO,data_pl,blankp,blankd,blankdiam,blankh,data_plsi,data_skel,colorstring,ChoiceDisplay, fitresult)
+function MultiRegionMesh(subRegions,Images,Threshold,INFO,data_pl,blankp,blankd,blankdiam,blankh,data_plsi,data_skel,colorstring,ChoiceDisplay, fitresult,name)
 
 UniqueSubRegions = [];
 for i = 1:size(subRegions,1)
@@ -169,7 +169,8 @@ for i = 1:length(ChoiceDisplay)
         'MarkerEdgeAlpha', 0.1,'MarkerFaceAlpha', 0.1)
     set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.04, 0.35, 0.45]*1.45);
     view(180,90);
-    title(strcat(INFO.ContentDate,{': '},INFO.StudyDescription))
+    title(strcat('Detection Regions of',' ',name))
+    %title(strcat(INFO.ContentDate,{': '},INFO.StudyDescription))
     xlabel('mm')
     ylabel('mm')
     zlabel('mm')
@@ -177,7 +178,7 @@ for i = 1:length(ChoiceDisplay)
     c = colorbar('location','WestOutside');
     c.Label.String = 'Time of Flight (units)';
     hold on
-    
+
     %scatter3 the skeleton on this as well
     if ~isempty(data_plsi{ChoiceDisplay(i)})
        %%important if you are lining up many choices, otherwise no worries
@@ -206,6 +207,8 @@ for i = 1:length(ChoiceDisplay)
         plot3(X1*INFO.PixelSpacing(1),Y1*INFO.PixelSpacing(2),Z1*INFO.SliceThickness,'k');
         plot3(X1*INFO.PixelSpacing(1),Y1*INFO.PixelSpacing(2),Z2*INFO.SliceThickness,'k');
     end
+    % To not save, comment here
+    savefig(strcat('Regions_',name,'.fig'))
 end
 %   daspect([1,1,.3]);axis tight;
 %   OptionZ.FrameRate=31;OptionZ.Duration=11;OptionZ.Periodic=true;

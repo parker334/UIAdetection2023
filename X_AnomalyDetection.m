@@ -179,6 +179,7 @@ scatter3(blankp(sub2ind(size(Images),data_pl(:,2),data_pl(:,1),data_pl(:,3))),..
     blankh(sub2ind(size(Images),data_pl(:,2),data_pl(:,1),data_pl(:,3))) - minH,'filled',...
     'MarkerFaceAlpha', 0.3,'MarkerEdgeAlpha', 0.3)
 view(135,30);
+title('Voxel Outliers')
 xlabel('Base Distance {\it d_b} (mm)')
 ylabel('Edge Distance {\it d_e} (mm)')
 zlabel('Centreline Distance {\it d_c} (mm)')
@@ -205,9 +206,13 @@ if ~isempty(SubList)
 end
 
 UIAsize = Voxels_sub*prod([INFO.PixelSpacing' INFO.SliceThickness]);
-anom_list = cell(size(UIAsize,2));
+anom_list = zeros(size(UIAsize,2),4);
 for i=1:size(UIAsize,2)
-    anom_list(i) = {[UIAsize(i),[max(data_subpl(i).PixelList)-min(data_subpl(i).PixelList)].*[INFO.PixelSpacing' INFO.SliceThickness]]};
+    anom_list(i,1) = UIAsize(i);
+    other = [max(data_subpl(i).PixelList)-min(data_subpl(i).PixelList)].*[INFO.PixelSpacing' INFO.SliceThickness];
+    anom_list(i,2) = other(1);
+    anom_list(i,3) = other(2);
+    anom_list(i,4) = other(3);
 end
 end
 
